@@ -14,6 +14,7 @@
 #include <string.h>
 #include "serial.h"
 
+
 #define OUT_OF_WORKSPACE -1
 #define BASE_ANGLE_EXCEEDED -2
 #define SHOULDER_ANGLE_EXCEEDED -3
@@ -47,6 +48,10 @@
 #define LEFT_STEPS 1536
 #define GRIPPER_STEPS 375
 
+//Function forward declarations
+int base(int x, int y);
+int shoulder(int x, int y, int z);
+
 // Public Data Structures
 	struct Taskspace
 	{
@@ -79,6 +84,8 @@
 		int latch;
 		int reg;
 	}; typedef struct IOspace IOspace;
+
+
 class Microbot
 {
 public:
@@ -101,7 +108,7 @@ public:
     int SendReset();
 
 private:
-	
+
 // Private Data Members
 	CSerial port;
 	Pose pose;
