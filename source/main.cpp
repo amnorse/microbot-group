@@ -16,5 +16,7 @@
 int main()
 {
     main_menu();
+    
+    int moon;
     return 0;
 }
