@@ -10,8 +10,35 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <limits>
 
 #define INT_MAX 100
+
+
+// Safe user continue option //
+bool contin()
+{
+    using namespace std;
+    char input = 'a';
+
+    // SAFE USER INPUT //
+    cout << "continue? [y/n] : ";
+    cin >> input;
+    while(!cin.fail() && input!='y' && input!='n'){
+        cin.clear();
+        cin.ignore( numeric_limits<streamsize>::max(),'\n');
+        cout << endl << "Bad input -- try again: ";
+        cin >> input;
+    }
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+
+    if(input == 'y'){
+        return true;
+    } else {
+        return false;
+    }
+}
 
 Registerspace xyz_set_joints(Registerspace d){
 
@@ -27,18 +54,20 @@ Registerspace xyz_set_joints(Registerspace d){
 
     // safely take user input for x, y, z //
     for(int i = 1; i<4; i++){
-        switch(i){
-        case 1:
-            cout << endl << "Input coordinate x: ";
-            break;
-        case 2:
-            cout << endl << "Input coordinate y: ";
-            break;
-        case 3:
-            cout << endl << "Input coordinate z: ";
-        }
 
-        while (!(cin >> crd[i]) || crd[i] < 0 || crd[i] > 1000)         //WARN: limits not properly set on x,y,z
+        switch(i){
+            case 1:
+                cout << endl << "Input coordinate x: ";
+                break;
+            case 2:
+                cout << endl << "Input coordinate y: ";
+                break;
+            case 3:
+                cout << endl << "Input coordinate z: ";
+                break;
+            }
+
+        while (!(cin >> crd[i-1]) || crd[i-1] < 0 || crd[i-1] > 1000)         //WARN: limits not properly set on x,y,z
         {
             cout << "Bad input - try again: ";
             cin.clear();
@@ -132,15 +161,8 @@ void forward_bot1()
 
         // MOVE //
      //   robot.SendStep(spe, delta);	        // commented out so it wont ruin my computer
-        do
-        {
-            cout << "Continue? [y/n]" << endl;
-            cin >> input;
-        } while( !cin.fail() && input!='y' && input!='n' );
-        cin.clear();
-        cin.ignore(INT_MAX, '\n');
 
-    }while(input == 'y');
+    }while(contin());
 
     return;
 }
@@ -162,15 +184,44 @@ void inverse_bot()
 
         // MOVE //
      //   robot.SendStep(spe, delta);	        // commented out so it wont ruin my computer
-        do
-        {
-            cout << "Continue? [y/n]" << endl;
-            cin >> input;
-        } while( !cin.fail() && input!='y' && input!='n' );
-        cin.clear();
-        cin.ignore(INT_MAX, '\n');
 
-    }while(input == 'y');
+    }while(contin());
+
+    return;
+}
+
+void forward_bot2()
+{
+    char cont = 'y';
+    using namespace std;
+    int input;
+    float *xyzP;
+    int param[5] = {0,0,0,0,0};
+    float cord[3] = {0,0,0};
+
+    do{
+
+        for(int i=1; i<6; i++){
+            cout << endl << "Please enter joint " << i << ": ";
+            while(!(cin >> input)){
+                cout << endl << "Bad input -- try again: ";
+                cin.clear();
+                cin.ignore(INT_MAX, '\n');
+            }
+            cin.clear();
+            cin.ignore(INT_MAX, '\n');
+            param[i-1] = input;
+        }
+
+        xyzP = forward_kin(cord,param[0],param[1],param[2],param[3],param[4]);
+        cord[0] = *xyzP;
+        cord[1] = *(xyzP + 1);
+        cord[2] = *(xyzP + 2);
+
+        cout << endl << "ONE: "  << cord[0]  << "  TWO: "  << cord[1]  << "  THREE: " << cord[2] << endl;
+
+    } while(contin());
+
 
     return;
 }
@@ -202,7 +253,7 @@ void main_menu()
                 forward_bot1();
                 break;
             case 2:
-                cout << endl << "Function not yet complete!" << endl;
+                forward_bot2();
                 break;
             case 3:
                 inverse_bot();

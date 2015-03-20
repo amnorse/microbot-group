@@ -51,6 +51,7 @@
 //Function forward declarations
 int base(int x, int y);
 int shoulder(int x, int y, int z);
+float *forward_kin(float xyz[3], int t1, int t2, int t3, int t4, int t5);
 
 // Public Data Structures
 	struct Taskspace

@@ -7,6 +7,7 @@ Registerspace manual_set_joints(Registerspace d);
 void forward_bot1();
 void inverse_bot();
 void main_menu();
+bool contin();
 
 
 #endif // OPERATION_H_INCLUDED
