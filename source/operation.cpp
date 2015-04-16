@@ -11,9 +11,42 @@
 #include <string>
 #include <iomanip>
 #include <limits>
+#include <typeinfo>
 
 #define INT_MAX 100
 
+
+// Calculate difference between current position and input position //
+// Ignore register 0 - is always 1 //
+// Note: do NOT pass microbot object by value //
+Registerspace reg_difference(Microbot *rob,Registerspace reg)
+{
+	using namespace std;
+
+	Registerspace beta, *beta_ptr;
+	beta_ptr = &beta;
+	rob->SendRead(beta_ptr);
+
+	// DEBUG //
+	for(int i=0; i < 9 ; i++){
+				cout << "Position delta-" << i << ": " << reg.r[i] << endl;
+			}
+	// DEBUG END //
+
+
+	for(int i=1; i < 8 ; i++){
+		reg.r[i] = reg.r[i] - beta.r[i];
+	}
+
+
+	// DEBUG //
+	for(int i=0; i < 9 ; i++){
+			cout << "Position delta-" << i << ": " << reg.r[i] << endl;
+		}
+	// DEBUG END //
+
+	return reg;
+}
 
 // Safe user continue option //
 bool contin()
@@ -40,6 +73,7 @@ bool contin()
     }
 }
 
+// Take x,y,z user input and set joints //
 Registerspace xyz_set_joints(Registerspace d){
 
     using namespace std;
@@ -67,16 +101,18 @@ Registerspace xyz_set_joints(Registerspace d){
                 break;
             }
 
-        while (!(cin >> crd[i-1]) || crd[i-1] < 0 || crd[i-1] > 1000)         //WARN: limits not properly set on x,y,z
+        while (!(cin >> crd[i-1]) || crd[i-1] < -1000 || crd[i-1] > 1000)         //WARN: limits not properly set on x,y,z
         {
             cout << "Bad input - try again: ";
             cin.clear();
             cin.ignore(INT_MAX, '\n');
         }
     }
-
+    cout << "xyz set: " << d.r[0] << endl;
      d.r[1] = base(crd[0],crd[1]);
      d.r[2] = shoulder(crd[0],crd[1],crd[2]);
+
+
 
 
     cout << endl <<  setw( 8 ) << "Joint" << setw( 13 ) << "Value" << endl;
@@ -115,6 +151,8 @@ Registerspace manual_set_joints(Registerspace d)
     d.r[3]=0;
     d.r[2]=0;
     d.r[1]=0;
+    d.r[0]=1;
+
     using namespace std;
     int joint_in;
     int value_in;
@@ -129,12 +167,14 @@ Registerspace manual_set_joints(Registerspace d)
                 cin.clear();
                 cin.ignore(INT_MAX, '\n');
             }
-
+            cout << d.r[0] << endl;
         if(joint_in != 0){
             cout << endl << "Please enter the number of steps " << joint_in << endl;
             cout << "input: ";
             cin >> value_in;
+
             d.r[joint_in]= value_in;
+
         }
 
     } while (joint_in!=0);
@@ -148,8 +188,9 @@ void forward_bot1()
 {
     using namespace std;
     Microbot robot;
-    char input = 'y';         // not the best, i know
     Registerspace delta;
+    cout << "r0 init: " << delta.r[0] << endl;
+    cout << "r0 init: " << delta.r[8] << endl;
 
     // SET SPEED //
     int spe = set_speed();
@@ -160,7 +201,7 @@ void forward_bot1()
         delta = manual_set_joints(delta);
 
         // MOVE //
-     //   robot.SendStep(spe, delta);	        // commented out so it wont ruin my computer
+        robot.SendStep(spe, delta);	        // commented out so it wont ruin my computer
 
     }while(contin());
 
@@ -171,19 +212,34 @@ void forward_bot1()
 void inverse_bot()
 {
     using namespace std;
-    Microbot robot;
-    char input = 'y';         // not the best, i know
-    Registerspace delta;
+    Microbot robot, *rob;
+    rob = &robot;
+    Registerspace invd;
+    invd.r[0]=1;
+    invd.r[1]=0;
+    invd.r[2]=0;
+    invd.r[3]=0;
+    invd.r[4]=0;
+    invd.r[5]=0;
+    invd.r[6]=0;
+    invd.r[7]=0;
+    invd.r[8]=0;
+
+
     // SET SPEED //
     int spe = set_speed();
 
     // MOVE LOOP //
     do{
         // SET JOINTS //
-        delta = xyz_set_joints(delta);
+    	invd = xyz_set_joints(invd);
+
+        // COMPARE //
+        invd = reg_difference(rob, invd);
 
         // MOVE //
-     //   robot.SendStep(spe, delta);	        // commented out so it wont ruin my computer
+        robot.SendStep(spe, invd);	        // commented out so it wont ruin my computer
+
 
     }while(contin());
 
@@ -192,7 +248,6 @@ void inverse_bot()
 
 void forward_bot2()
 {
-    char cont = 'y';
     using namespace std;
     int input;
     float *xyzP;
