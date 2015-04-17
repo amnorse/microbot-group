@@ -132,3 +132,4 @@ private:
 	int SetDelta(Registerspace start, Registerspace finish);
 
 };
+Registerspace inverse_kin(int x, int y, int z, Registerspace reg);

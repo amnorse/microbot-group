@@ -109,8 +109,8 @@ Registerspace xyz_set_joints(Registerspace d){
         }
     }
     cout << "xyz set: " << d.r[0] << endl;
-     d.r[1] = base(crd[0],crd[1]);
-     d.r[2] = shoulder(crd[0],crd[1],crd[2]);
+
+     d = inverse_kin(crd[0], crd[1], crd[2], d);
 
 
 
