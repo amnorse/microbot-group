@@ -24,6 +24,6 @@ int main()
 //    std::cout << "delta 1: " << delta.r[1] << std::endl;
 
 
-	//main_menu();
+	main_menu();
     return 0;
 }

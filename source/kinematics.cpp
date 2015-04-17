@@ -52,6 +52,7 @@ int shoulder(int x, int y, int z) // Returns shoulder movement
    return theta1;
 }
 
+
 // calculated inverse kinematics with magic //
 Registerspace inverse_kin(int x, int y, int z, Registerspace reg)
 {
@@ -66,13 +67,48 @@ Registerspace inverse_kin(int x, int y, int z, Registerspace reg)
 
     hyp = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
     theta1 = atan2(y,x)*(180/PI);
+    //std::cout << "theta1: " << theta1 << std::endl;
+    theta3 = acos((pow(hyp,2) - pow(A1,2) - pow(A2,2))/(2*A1*A2))*(180/PI);
+    alpha = atan2(z, sqrt(pow(x,2) + pow(y,2)));
+    beta = acos((pow(A2,2) - pow(A1,2) - pow(hyp,2))/(2*A1*hyp));
+    theta2 = (alpha+beta)*(180/PI);
+    theta3=180-theta2-theta3;
+    std::cout << "theta2: " << theta2 << std::endl;
+
+    reg.r[1] = theta1*19.64;
+    reg.r[2] = -(theta2*19.64);
+    reg.r[3] = -(theta3*11.55);
+    return reg;
+}
+
+/*
+Registerspace inverse_kin(int x, int y, int z, Registerspace reg)
+{
+
+    double hyp;
+    double theta1;
+    double theta2;
+    double theta3;
+    double alpha;
+    double beta;
+
+
+    hyp = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+    theta1 = atan2(y,x)*(180/PI);
+    //std::cout << "theta1: " << theta1 << std::endl;
+
+
+
     theta3 = acos((pow(hyp,2) - pow(A1,2) - pow(A2,2))/(2*A1*A2))*(180/PI);
     alpha = atan2(z, sqrt(pow(x,2) + pow(y,2)));
     beta = acos((pow(A2,2) - pow(A1,2) - pow(hyp,2))/(2*A1*hyp));
     theta2 = (90-(alpha+beta)*(180/PI));
+    std::cout << "theta2: " << theta2 << std::endl;
 
-    reg.r[1] = theta1*10;
-    reg.r[2] = theta2*10;
-    reg.r[3] = theta3*10;
+    //reg.r[1] = theta1*19.64;
+    reg.r[2] = theta2*19.64;
+    //reg.r[3] = -(theta3*11.55);
     return reg;
 }
+
+*/
