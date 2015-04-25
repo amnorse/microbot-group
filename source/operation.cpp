@@ -16,6 +16,47 @@
 #define INT_MAX 100
 
 
+int get_steps(Registerspace *beta, Registerspace reg)
+{
+	static int mem1;
+	static int mem2;
+	static int mem3;
+	static int mem4;
+	static int mem5;
+	static int mem6;
+	static int mem7;
+	static bool mem_init;
+
+	if(!mem_init){
+		mem1 = 0;
+		mem2 = 10;
+		mem3 = 1238;
+		mem4 = 384;
+		mem5 = 384;
+		mem6 = 1238;
+		mem7 = 0;
+		mem_init = true;
+	}
+
+
+	beta->r[1] = mem1;
+	beta->r[2] = mem2;
+	beta->r[3] = mem3;
+	beta->r[4] = mem4;
+	beta->r[5] = mem5;
+	beta->r[6] = mem6;
+	beta->r[7] = mem7;
+
+	mem1 = reg.r[1] ;
+	mem2 = reg.r[2] ;
+	mem3 = reg.r[3] ;
+	mem4 = reg.r[4] ;
+	mem5 = reg.r[5] ;
+	mem6 = reg.r[6] ;
+	mem7 = reg.r[7] ;
+
+}
+
 // Calculate difference between current position and input position //
 // Ignore register 0 - is always 1 //
 // Note: do NOT pass microbot object by value //
@@ -25,7 +66,7 @@ Registerspace reg_difference(Microbot *rob,Registerspace reg)
 
 	Registerspace beta, *beta_ptr;
 	beta_ptr = &beta;
-	rob->SendRead(beta_ptr);
+	get_steps(beta_ptr, reg);
 
 	// DEBUG //
 	for(int i=0; i < 9 ; i++){
@@ -77,7 +118,7 @@ bool contin()
 Registerspace xyz_set_joints(Registerspace d){
 
     using namespace std;
-    int crd[3]={0,0,0};
+    int crd[6]={0,0,0,0,0,0};
     d.r[7]=0;
 	d.r[6]=0;
 	d.r[5]=0;
@@ -87,7 +128,7 @@ Registerspace xyz_set_joints(Registerspace d){
     d.r[1]=0;
 
     // safely take user input for x, y, z //
-    for(int i = 1; i<4; i++){
+    for(int i = 1; i<7; i++){
 
         switch(i){
             case 1:
@@ -99,6 +140,15 @@ Registerspace xyz_set_joints(Registerspace d){
             case 3:
                 cout << endl << "Input coordinate z: ";
                 break;
+            case 4:
+				cout << endl << "Input roll: ";
+				break;
+            case 5:
+				cout << endl << "Input pitch: ";
+				break;
+            case 6:
+				cout << endl << "Input yaw: ";
+				break;
             }
 
         while (!(cin >> crd[i-1]) || crd[i-1] < -1000 || crd[i-1] > 1000)         //WARN: limits not properly set on x,y,z
@@ -108,18 +158,18 @@ Registerspace xyz_set_joints(Registerspace d){
             cin.ignore(INT_MAX, '\n');
         }
     }
-    cout << "xyz set: " << d.r[0] << endl;
+     cout << "xyz set: " << d.r[0] << endl;
 
-     d = inverse_kin(crd[0], crd[1], crd[2], d);
-
-
+     d = inverse_kin(crd[0], crd[1], crd[2],crd[3],crd[4],crd[5], d);
 
 
-    cout << endl <<  setw( 8 ) << "Joint" << setw( 13 ) << "Value" << endl;
-    cout << "---------------------------" << endl;
-    cout << setw( 8 )<< "Base" << setw( 13 ) << d.r[1] << endl;
-    cout << setw( 8 )<< "Shoulder" << setw( 13 ) << crd[ 1 ] << endl;
-    cout << setw( 8 )<< "Elbow" << setw( 13 ) << crd[ 2 ] << endl << endl;
+
+
+//    cout << endl <<  setw( 8 ) << "Joint" << setw( 13 ) << "Value" << endl;
+//    cout << "---------------------------" << endl;
+//    cout << setw( 8 )<< "Base" << setw( 13 ) << d.r[1] << endl;
+//    cout << setw( 8 )<< "Shoulder" << setw( 13 ) << crd[ 1 ] << endl;
+//    cout << setw( 8 )<< "Elbow" << setw( 13 ) << crd[ 2 ] << endl << endl;
     return d;
 }
 
@@ -215,15 +265,15 @@ void inverse_bot()
     Microbot robot, *rob;
     rob = &robot;
     Registerspace invd;
-    invd.r[0]=1;
-    invd.r[1]=0;
-    invd.r[2]=0;
-    invd.r[3]=0;
-    invd.r[4]=0;
-    invd.r[5]=0;
-    invd.r[6]=0;
-    invd.r[7]=0;
-    invd.r[8]=0;
+    invd.r[0]= 1;
+    invd.r[1]= 0;
+    invd.r[2]= 0;
+    invd.r[3]= 0;
+    invd.r[4]= 0;
+    invd.r[5]= 0;
+    invd.r[6]= 0;
+    invd.r[7]= 0;
+    invd.r[8]= 0;
 
 
     // SET SPEED //
