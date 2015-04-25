@@ -186,7 +186,7 @@ int Microbot::SendRead(Registerspace *read)
 			index++;
 	}
 
-//	printf("Motor steps in ascii =  %s\n", d+2);
+	//printf("Motor steps in ascii =  %s\n", d+2);
 	
 	
 

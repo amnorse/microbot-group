@@ -1,6 +1,7 @@
 #ifndef OPERATION_H_INCLUDED
 #define OPERATION_H_INCLUDED
 
+Registerspace reg_difference(Microbot *rob,Registerspace reg);
 Registerspace xyz_set_joints(Registerspace d);
 int set_speed();
 Registerspace manual_set_joints(Registerspace d);
