@@ -14,6 +14,7 @@
 #include <string.h>
 #include "serial.h"
 
+
 #define OUT_OF_WORKSPACE -1
 #define BASE_ANGLE_EXCEEDED -2
 #define SHOULDER_ANGLE_EXCEEDED -3
@@ -47,6 +48,11 @@
 #define LEFT_STEPS 1536
 #define GRIPPER_STEPS 375
 
+//Function forward declarations
+int base(int x, int y);
+int shoulder(int x, int y, int z);
+int forward_kin(float *xyzp, int t1, int t2, int t3, int t4, int t5);
+
 // Public Data Structures
 	struct Taskspace
 	{
@@ -79,6 +85,8 @@
 		int latch;
 		int reg;
 	}; typedef struct IOspace IOspace;
+
+
 class Microbot
 {
 public:
@@ -101,7 +109,7 @@ public:
     int SendReset();
 
 private:
-	
+
 // Private Data Members
 	CSerial port;
 	Pose pose;
@@ -124,3 +132,4 @@ private:
 	int SetDelta(Registerspace start, Registerspace finish);
 
 };
+Registerspace inverse_kin(int x, int y, int z, int roll, int pitch, int yaw, Registerspace reg);
