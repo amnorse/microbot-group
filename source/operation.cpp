@@ -76,6 +76,47 @@ int get_steps(Registerspace *present_mem_contents, Registerspace new_mem_content
 
 }
 
+int get_steps(Registerspace *beta, Registerspace reg)
+{
+	static int mem1;
+	static int mem2;
+	static int mem3;
+	static int mem4;
+	static int mem5;
+	static int mem6;
+	static int mem7;
+	static bool mem_init;
+
+	if(!mem_init){
+		mem1 = 0;
+		mem2 = 10;
+		mem3 = 1238;
+		mem4 = 384;
+		mem5 = 384;
+		mem6 = 1238;
+		mem7 = 0;
+		mem_init = true;
+	}
+
+
+	beta->r[1] = mem1;
+	beta->r[2] = mem2;
+	beta->r[3] = mem3;
+	beta->r[4] = mem4;
+	beta->r[5] = mem5;
+	beta->r[6] = mem6;
+	beta->r[7] = mem7;
+
+	mem1 = reg.r[1] ;
+	mem2 = reg.r[2] ;
+	mem3 = reg.r[3] ;
+	mem4 = reg.r[4] ;
+	mem5 = reg.r[5] ;
+	mem6 = reg.r[6] ;
+	mem7 = reg.r[7] ;
+
+}
+
 // Calculate difference between current position and input position //
 // Ignore register 0 - is always 1 //
 // Note: do NOT pass microbot object by value //
@@ -85,11 +126,15 @@ Registerspace reg_difference(Microbot *rob,Registerspace reg)
     int error = 0;
 	Registerspace beta, *beta_ptr;
 	beta_ptr = &beta;
+<<<<<<< HEAD
 
 	error = get_steps(beta_ptr, reg, 3);
 	if (error > 0)
         cout << "MEMORY ACCESS ERROR" << endl;
 
+=======
+	get_steps(beta_ptr, reg);
+>>>>>>> origin/lab2-norse
 
 	// DEBUG //
 //	for(int i=0; i < 9 ; i++){
@@ -173,7 +218,11 @@ Registerspace xyz_set_joints(Registerspace d){
 				cout << endl << "Input pitch: ";
 				break;
             case 6:
+<<<<<<< HEAD
 				cout << endl << "Input gripper: ";
+=======
+				cout << endl << "Input yaw: ";
+>>>>>>> origin/lab2-norse
 				break;
             }
 
@@ -204,6 +253,7 @@ Registerspace move_vector_calc(Registerspace reg)
 	float  xyz[3], *xyzp;
 	xyzp = &xyz[0];
 
+<<<<<<< HEAD
     // SET DEFAULT FAIL //
     xyz[0] = -1;
     xyz[1] = -1;
@@ -216,6 +266,14 @@ Registerspace move_vector_calc(Registerspace reg)
 	std::cout << "  X: " << xyz[0] << "  Y: " <<  xyz[1] << "  Z: " <<xyz[2] << std::endl;
 
 	return previous; // WRONG, just placeholder
+=======
+//    cout << endl <<  setw( 8 ) << "Joint" << setw( 13 ) << "Value" << endl;
+//    cout << "---------------------------" << endl;
+//    cout << setw( 8 )<< "Base" << setw( 13 ) << d.r[1] << endl;
+//    cout << setw( 8 )<< "Shoulder" << setw( 13 ) << crd[ 1 ] << endl;
+//    cout << setw( 8 )<< "Elbow" << setw( 13 ) << crd[ 2 ] << endl << endl;
+    return d;
+>>>>>>> origin/lab2-norse
 }
 
 
