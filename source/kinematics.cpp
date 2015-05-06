@@ -15,12 +15,12 @@
 #define AW 96.5
 
 
+<<<<<<< HEAD
 float *forward_kin(float xyz[3], int t1, int t2, int t3, int t4, int t5)
+=======
+int forward_kin(float *xyzp, int t1, int t2, int t3, int t4, int t5)
+>>>>>>> origin/lab2-norse
 {
-    // SET DEFAULT FAIL //
-    xyz[0] = -1;
-    xyz[1] = -1;
-    xyz[2] = -1;
 
     float a1 = 177.8;
     float a2 = 177.8;
@@ -33,11 +33,15 @@ float *forward_kin(float xyz[3], int t1, int t2, int t3, int t4, int t5)
     float x = rad*cos(t1*CONVERT);
     float y = rad*sin(t1*CONVERT);
 
-    xyz[0] = x;
-    xyz[1] = y;
-    xyz[2] = z;
+    *xyzp = x;
+    std::cout << "x: " << x << std::endl;
+    *(xyzp+1) = y;
+    std::cout << "y: " << y << std::endl;
+    *(xyzp+2) = z;
+    std::cout << "z: " << z << std::endl;
 
-    return xyz;
+    return 0;
+
 }
 
 int base(int x, int y) // Returns base movement
@@ -139,6 +143,7 @@ Registerspace inverse_kin2(int xin, int yin, int zin, int roll, int pitch, int y
     return reg;
 }
 */
+<<<<<<< HEAD
 
 
 Registerspace inverse_kin(int x, int y, int zin, int roll, int pitch, int yaw, Registerspace reg)
@@ -156,6 +161,8 @@ Registerspace inverse_kin(int x, int y, int zin, int roll, int pitch, int yaw, R
 	int z;
 
 	z = zin - 263;
+=======
+>>>>>>> origin/lab2-norse
 
 	theta1 = atan2(y,x);
 	std::cout << "theta1: " << theta1 << std::endl;
@@ -186,6 +193,53 @@ Registerspace inverse_kin(int x, int y, int zin, int roll, int pitch, int yaw, R
 
 	theta3 = beta - alpha;
 	std::cout << "theta3: " << theta3*(180/PI) << std::endl;
+
+    reg.r[1] =  theta1*19.64*(180/PI);
+    reg.r[2] =  -theta2*19.64*(180/PI);
+    reg.r[3] =  -theta3*11.55*(180/PI);
+    reg.r[4] =  -theta4*4.27;
+    reg.r[5] =  -theta5*4.27;
+    reg.r[6] =  -theta3*11.55*(180/PI);
+    return reg;
+}
+
+Registerspace inverse_kin(int x, int y, int zin, int roll, int pitch, int yaw, Registerspace reg)
+{
+	double theta1;
+	double RR;
+	double theta5;
+	double theta4;
+	double R0;
+	double Z0;
+	double beta;
+	double alpha;
+	double theta2;
+	double theta3;
+	int z;
+
+	z = zin - 263;
+	theta1 = atan2(y,x);
+	RR = sqrt( pow(x,2) + pow(y,2) );
+	theta5 = pitch + roll;
+	theta4 = pitch - roll;
+	R0 = RR - LL * cos(pitch*(PI/180));
+	Z0 = z - LL * sin(pitch*(PI/180));// - H;
+	beta = atan2(Z0, R0);
+	alpha = atan(   sqrt(   ((4 * pow(L,2)) / (pow(R0,2) + pow(Z0,2))) - 1 )  );
+	theta2 = alpha + beta;
+	theta3 = beta - alpha;
+
+//    std::cout << "theta1: " << theta1 << std::endl;
+//    std::cout << "RR: " << RR << std::endl;
+//    std::cout << "theta5: " << theta5 << std::endl;
+//    std::cout << "theta4: " << theta4 << std::endl;
+//    std::cout << "R0: " << R0 << std::endl;
+//    std::cout << "Z0: " << Z0 << std::endl;
+//    std::cout << "beta: " << beta << std::endl;
+//    std::cout << "alpha: " << alpha << std::endl;
+//    std::cout << "theta2: " << theta2*(180/PI) << std::endl;
+//    std::cout << "theta3: " << theta3*(180/PI) << std::endl;
+
 
     reg.r[1] =  theta1*19.64*(180/PI);
     reg.r[2] =  -theta2*19.64*(180/PI);
