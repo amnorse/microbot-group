@@ -296,7 +296,7 @@ void forward_bot1()
         delta = manual_set_joints(delta);
 
         // MOVE //
-//        robot.SendStep(spe, delta);	        // commented out so it wont ruin my computer
+        robot.SendStep(spe, delta);	        // commented out so it wont ruin my computer
 
     }while(contin());
 
@@ -333,7 +333,7 @@ void inverse_bot()
     	invd = reg_difference(rob, invd);
 
         // MOVE //
-//       	robot.SendStep(spe, invd);	        // commented out so it wont ruin my computer
+       	robot.SendStep(spe, invd);	        // commented out so it wont ruin my computer
 
 
     }while(contin());
@@ -437,11 +437,12 @@ void line_bot()
             cout << "z vec: " << xyz_vector[2] << endl;
             line_bot_reg = inverse_kin(xyz_vector[0], xyz_vector[1], xyz_vector[2], xyz_dest[3], xyz_dest[4], xyz_dest[5], line_bot_reg);
             line_bot_reg = reg_difference(rob, line_bot_reg);
-  //          robot.SendStep(spe, line_bot_reg);
+            robot.SendStep(spe, line_bot_reg);
         }
         // final step //
         line_bot_reg = inverse_kin(xyz_dest[0], xyz_dest[1], xyz_dest[2], xyz_dest[3], xyz_dest[4], xyz_dest[5], line_bot_reg);
-//        robot.SendStep(spe, line_bot_reg);
+        line_bot_reg = reg_difference(rob, line_bot_reg);
+        robot.SendStep(spe, line_bot_reg);
 
         // set starting position to new position //
         xyz_start[0] = xyz_dest[0];
